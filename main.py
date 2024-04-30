@@ -1,11 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from animals_monitor.router_animals_monitor import animals_monitor_router
-from employees_chat.router_employees_chat import employees_chat_router
+from src.routers.UserRouter import UserRouter
 
 app = FastAPI()
-app.include_router(animals_monitor_router)
-app.include_router(employees_chat_router)
 
 app.add_middleware(
     CORSMiddleware,
@@ -16,25 +13,40 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# lab2, lab3, prezentari, lab4 cod sursa, materiale utile, exemple probleme sockets, test1, test2
 
-from pymongo.mongo_client import MongoClient
-
-uri = "mongodb+srv://Dutzz:mTducQ22TviowDpx@cluster0.e0wvocd.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
-
-client = MongoClient(uri)
-
-try:
-    client.admin.command('ping')
-    print("Pinged!")
-
-except Exception as e:
-    print(e)
+app.include_router(UserRouter)
 
 
 @app.get("/")
 async def root():
-    return {"message": "Hello World"}
+    try:
+        pass
+        # client.admin.command('ping')
+        # print("output", client.zoo_hub_python_api_db.users.find())
+        # print(users_entity(client.zoo_hub_python_api_db.users.find()))
+        # return users_entity(client.zoo_hub_python_api_db.users.find())
+        # user_repo = UserRepository()
+        # data = client.zoo_hub_python_api_db.users.find()
+        # s = UserSchema()
+        # for user in data:
+        #     print("USERACHE", user)
+        # print(user_repo.collection)
+        # return user_repo.get_all_users()
+    except Exception as e:
+        print(e)
+    # return {"message": "Hello World"}
+
+
+# @app.post("/new")
+# async def new_user(user: User):
+#     try:
+#         client.admin.command('ping')
+#         client.zoo_hub_python_api_db.users.insert_one(dict(user))
+#         # print(users_entity(client.zoo_hub_python_api_db.users.find()))
+#         # return users_entity(client.zoo_hub_python_api_db.users.find())
+#     except Exception as e:
+#         print(e)
+#     # return {"message": "Hello World"}
 
 
 @app.get("/hello/{name}")

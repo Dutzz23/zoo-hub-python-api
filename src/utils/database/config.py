@@ -4,6 +4,7 @@ uri = "mongodb+srv://Dutzz:mTducQ22TviowDpx@cluster0.e0wvocd.mongodb.net/?retryW
 
 client = MongoClient(uri)
 
-db = client.zoo_hub_db
+database = client.zoo_hub_python_api_db
 
-collection_name = db['tickets_collection']
+# Defining collection example
+# collection_name = database['tickets_collection']
