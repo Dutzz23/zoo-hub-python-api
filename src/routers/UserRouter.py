@@ -1,13 +1,12 @@
 from http import HTTPStatus
 
-from fastapi import APIRouter, HTTPException, Body
+from fastapi import APIRouter
 from fastapi.responses import JSONResponse
-from pydantic import BaseModel
 
-from src.models.UpdateUser import UpdateUser
-from src.models.UserCollection import UserCollection
+from src.models.User.User import User
+from src.models.User.UserCollection import UserCollection
 from src.utils.database.config import database
-from src.models.User import User
+from src.models.User.UserData import UserData
 from src.repositories.UserRepository import UserRepository
 
 UserRouter = APIRouter(prefix='/users', tags=['users'])
@@ -24,7 +23,10 @@ repository = UserRepository()
     response_model_by_alias=False,
 )
 async def get_users():
-    users = repository.get_all_users()
+    """
+            A list of `User` records will be provided in the response.
+    """
+    users = repository.read_all_users()
     return users
 
 
@@ -38,21 +40,24 @@ async def get_users():
 
 @UserRouter.post(
     path='',
-    response_model=User,
+    response_model=UserData,
     response_description="Create a new user",
     status_code=HTTPStatus.CREATED,
     response_model_by_alias=False
 )
-async def create_user(user: User):
+async def create_user(user: UserData):
     """
         Insert a new user record.
-
         A unique `id` will be created and provided in the response.
-        """
+    """
     # Remove the id field from the user object
-    new_user = collection.insert_one(user.model_dump(by_alias=True, exclude=set("id")))
-    created_user = collection.find_one({"id": new_user.inserted_id})
-    return created_user
+    # new_user = collection.insert_one(user.model_dump(by_alias=True, exclude=set("id")))
+    new_user_id = repository.create_user(user)
+    # created_user = collection.find_one({"id": new_user.inserted_id})
+    if new_user_id is not None:
+        created_user = repository.read_user_by_id(new_user_id)
+        return created_user
+    return JSONResponse(status_code=404, content=f"User cannot be created")
 
     # user_dict = user.dict(exclude={'id'})
     #
@@ -69,12 +74,12 @@ async def create_user(user: User):
 @UserRouter.get(
     path="/{user_id}",
     response_description="Get a user by id",
-    response_model=UpdateUser,
+    response_model=User,
     response_model_by_alias=False,
     responses={404: {"description": "Not found"}},
 )
 async def read_user(user_id: str):
-    user: UpdateUser = repository.get_user_by_id(user_id)
+    user: User = repository.read_user_by_id(user_id)
     if user is not None:
         print("user in read_user", user)
         return user

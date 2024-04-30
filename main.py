@@ -1,6 +1,9 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+
+from src.routers.AccountRouter import AccountRouter
 from src.routers.UserRouter import UserRouter
+from src.services.AccountService import AccountService
 
 app = FastAPI()
 
@@ -13,8 +16,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
 app.include_router(UserRouter)
+app.include_router(AccountRouter)
+
+account_service = AccountService()
 
 
 @app.get("/")

@@ -2,7 +2,8 @@ from typing import List
 
 from pydantic import BaseModel
 
-from src.models.User import User
+from src.models.User.User import User
+from src.models.User.UserData import UserData
 
 
 class UserCollection(BaseModel):
