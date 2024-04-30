@@ -6,7 +6,7 @@ from src.models.Account.Account import Account
 from src.repositories.RepositoryAbstract import RepositoryAbstract
 
 
-class AccountRepository(RepositoryAbstract[Account]):
+class AccountRepository(RepositoryAbstract):
     def __init__(self):
         table_name = 'accounts'
         super().__init__(table_name, Account)

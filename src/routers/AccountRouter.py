@@ -30,8 +30,8 @@ async def register():
     response_model_by_alias=False,
     )
 async def get_all_accounts():
-    pass
     try:
+        _service.repository.find_one_by({})
         data = _service.get_all()
         print("GET ALL", data)
         return data

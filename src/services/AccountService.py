@@ -28,14 +28,14 @@ class AccountService(ServiceAbstract):
             print(e)
         try:
             print("Trying to get account by id")
-            result = self.repository.read_by_id(account_id)
+            result = self.repository.find_by_id(account_id)
             print("Read by succeed")
             print("Result", result)
         except Exception as e:
             print(e)
         try:
             print("Trying to get all accounts")
-            result = self.repository.read_all()
+            result = self.repository.find_all()
             print("Read all succeed")
             print("Result", result)
 
@@ -58,10 +58,10 @@ class AccountService(ServiceAbstract):
             print(e)
 
     def get_all(self):
-        return self.repository.read_all()
+        return self.repository.find_all()
 
     def get_by_id(self, account_id: str) -> Optional[Account]:
-        return self.repository.read_by_id(account_id)
+        return self.repository.find_by_id(account_id)
 
     def login(self, username, password):
         pass
