@@ -2,6 +2,7 @@ from http import HTTPStatus
 
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse
+from pydantic import BaseModel
 
 from src.models.User.User import User
 from src.models.User.UserCollection import UserCollection
@@ -14,6 +15,16 @@ UserRouter = APIRouter(prefix='/users', tags=['users'])
 collection = database['users']
 
 repository = UserRepository()
+
+
+class Demo(BaseModel):
+    name: str
+    email: str
+
+
+@UserRouter.get('/demo')
+def demo(data1, data2, data3, data4, data5, data6, data7):
+    return JSONResponse({"data": data1, "status": HTTPStatus.OK, "message": "Hello World"})
 
 
 @UserRouter.get(

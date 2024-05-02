@@ -38,7 +38,7 @@ class RepositoryAbstract:
         """
         try:
             data = self.collection.find_one({'_id': ObjectId(data_id)})
-            return self.resource_class(**data)
+            return self.resource_class(**data) if data else None
         except Exception as e:
             print("RepositoryAbstract.find_by_id(): ", e)
         return None

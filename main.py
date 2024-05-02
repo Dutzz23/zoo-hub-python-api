@@ -1,12 +1,23 @@
+import os
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from redis import Redis
+from redis.commands.search.field import TextField
+from redis.commands.search.indexDefinition import IndexDefinition, IndexType
+from starlette.responses import FileResponse
 
-from src.routers.AccountRouter import AccountRouter
+from api_description import description
+from src.routers.AuthenticationRouter import AuthenticationRouter
 from src.routers.UserRouter import UserRouter
-from src.services.AccountService import AccountService
 
-app = FastAPI()
+app = FastAPI(
+    title="ZooHub API",
+    description=description,
+    version="0.1.0",
+)
 
+# noinspection PyTypeChecker
 app.add_middleware(
     CORSMiddleware,
     # allow_origins=["http://localhost:3000"],
@@ -17,9 +28,47 @@ app.add_middleware(
 )
 
 app.include_router(UserRouter)
-app.include_router(AccountRouter)
+app.include_router(AuthenticationRouter)
 
-account_service = AccountService()
+
+
+# noinspection PyTypeHints
+@app.on_event("startup")
+async def startup():
+    global redis_cache
+    redis_cache = Redis(host='localhost', port=6379, db=0)
+
+    # schema = (
+    #     TextField("$.username", as_name="username"),
+    #     TextField("$.token", as_name="token"),
+    # )
+    #
+    # redis_cache = redis_cache.ft("idx:users")
+    # redis_cache.create_index(
+    #     schema,
+    #     definition=IndexDefinition(
+    #         prefix=["user:"], index_type=IndexType.JSON
+    #     )
+    # )
+
+
+    print("Redis connection established")
+
+
+@app.on_event("shutdown")
+async def shutdown():
+    global redis_cache
+    redis_cache.close()
+    print("Redis connection ended")
+
+
+# Route for FastApiDocs to display local images. Not to be exposed
+@app.get(
+    path="/img/{filename}",
+    deprecated=True)
+def get_img(filename: str):
+    filepath = os.path.join('images/', os.path.basename(filename))
+    return FileResponse(filepath)
 
 
 @app.get("/")
@@ -56,4 +105,12 @@ async def root():
 
 @app.get("/hello/{name}")
 async def say_hello(name: str):
+    try:
+        global redis_cache
+        redis_cache.set("hello", str(name))
+        # print("LOL", redis_cache.get('vlad').decode("utf-8"))
+        res = redis_cache.get('hello')
+        print(str(str(res)))
+    except Exception as e:
+        print(e)
     return {"message": f"Hello {name}"}

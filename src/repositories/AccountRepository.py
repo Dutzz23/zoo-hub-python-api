@@ -1,17 +1,17 @@
-from typing import List, Optional
+from typing import Optional
 
 from bson import ObjectId
 
-from src.models.Account.Account import Account
-from src.repositories.RepositoryAbstract import RepositoryAbstract
+from src.models.Account.Usr import Usr
+from src.repositories import RepositoryAbstract
 
 
 class AccountRepository(RepositoryAbstract):
     def __init__(self):
         table_name = 'accounts'
-        super().__init__(table_name, Account)
+        super().__init__(table_name, Usr)
 
-    def create_account(self, account: Account) -> Optional[str]:
+    def create_account(self, account: Usr) -> Optional[str]:
         """
         Create a new account.
         """
@@ -23,7 +23,7 @@ class AccountRepository(RepositoryAbstract):
             print(e)
         return None
     
-    def read_account_by_id(self, account_id: str) -> Optional[Account]:
+    def read_account_by_id(self, account_id: str) -> Optional[Usr]:
         """
             Retrieve an account by their ID.
         """
@@ -34,18 +34,18 @@ class AccountRepository(RepositoryAbstract):
             print(e)
         return None
 
-    def read_account_by_email(self, email: str) -> Optional[Account]:
+    def read_account_by_email(self, email: str) -> Optional[Usr]:
         """
             Retrieve an account by its email.
         """
         try:
             account = self.collection.find_one({"email": email})
-            return Account(**account)
+            return Usr(**account)
         except Exception as e:
             print(e)
         return None
 
-    def update_account(self, account: Account) -> bool:
+    def update_account(self, account: Usr) -> bool:
         """
         Update an account.
         """
@@ -63,5 +63,5 @@ class AccountRepository(RepositoryAbstract):
             print(e)
         return False
 
-    def delete_account(self, account: Account) -> bool:
+    def delete_account(self, account: Usr) -> bool:
         pass
