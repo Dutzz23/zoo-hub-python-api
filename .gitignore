@@ -1,0 +1,11 @@
+# Temporary file for requirements.txt
+requirements.in
+# Demo endpoint testing file
+test_main.http
+# Local environment
+.venv
+# Redis database
+dump.rdb
+
+# Idea
+.idea
