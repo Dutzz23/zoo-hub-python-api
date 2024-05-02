@@ -14,10 +14,10 @@ from src.repositories.UsrRepository import UsrRepository
 from src.services.ServiceAbstract import ServiceAbstract
 from src.utils.password_validators import validate_password, verify_password
 
-
 _oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 redis_cache = Redis(host='redis', port=6379, db=0, single_connection_client=False)
+
 
 class AuthenticationService(ServiceAbstract):
     def __init__(self):
