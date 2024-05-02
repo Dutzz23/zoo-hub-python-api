@@ -1,5 +1,5 @@
-from src.models.Account.Usr import Usr
-from src.repositories.RepositoryAbstract import RepositoryAbstract
+from app.models.Account.Usr import Usr
+from app.repositories.RepositoryAbstract import RepositoryAbstract
 
 
 class UsrRepository(RepositoryAbstract):

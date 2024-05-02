@@ -2,8 +2,8 @@ from typing import Optional
 from pydantic import Field, EmailStr, ConfigDict, BaseModel
 from bson import ObjectId
 
-from src.models.User.UserData import UserData
-from src.utils.PyObjectId import PyObjectId
+from app.models.User.UserData import UserData
+from app.utils.PyObjectId import PyObjectId
 
 
 class User(BaseModel):

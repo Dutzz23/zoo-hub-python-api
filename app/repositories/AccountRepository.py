@@ -2,8 +2,8 @@ from typing import Optional
 
 from bson import ObjectId
 
-from src.models.Account.Usr import Usr
-from src.repositories import RepositoryAbstract
+from app.models.Account.Usr import Usr
+from app.repositories import RepositoryAbstract
 
 
 class AccountRepository(RepositoryAbstract):

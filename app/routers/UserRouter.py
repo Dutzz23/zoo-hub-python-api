@@ -4,11 +4,11 @@ from fastapi import APIRouter
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
-from src.models.User.User import User
-from src.models.User.UserCollection import UserCollection
-from src.utils.database.config import database
-from src.models.User.UserData import UserData
-from src.repositories.UserRepository import UserRepository
+from app.models.User.User import User
+from app.models.User.UserCollection import UserCollection
+from app.utils.database.config import database
+from app.models.User.UserData import UserData
+from app.repositories.UserRepository import UserRepository
 
 UserRouter = APIRouter(prefix='/users', tags=['users'])
 

@@ -2,7 +2,7 @@ from typing import List
 
 from pydantic import BaseModel
 
-from src.models.Account.Usr import Usr
+from app.models.Account.Usr import Usr
 
 
 class AccountCollection(BaseModel):

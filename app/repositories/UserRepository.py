@@ -1,9 +1,9 @@
 from typing import Optional
 
-from src.models.User.User import User
-from src.models.User.UserData import UserData
-from src.models.User.UserCollection import UserCollection
-from src.utils.database.config import database
+from app.models.User.User import User
+from app.models.User.UserData import UserData
+from app.models.User.UserCollection import UserCollection
+from app.utils.database.config import database
 from bson import ObjectId
 
 

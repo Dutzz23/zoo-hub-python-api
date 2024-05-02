@@ -1,6 +1,6 @@
 from pydantic import BaseModel, EmailStr, ConfigDict, Field
 
-from src.utils.PyObjectId import PyObjectId
+from app.utils.PyObjectId import PyObjectId
 
 
 class UserData(BaseModel):

@@ -3,7 +3,7 @@ from typing import Optional, List
 from bson import ObjectId
 from pydantic import BaseModel
 
-from src.utils.database.config import database
+from app.utils.database.config import database
 
 
 class RepositoryAbstract:

@@ -1,4 +1,4 @@
-from src.schemas.ShemaAbstract import SchemaAbstract
+from app.schemas.ShemaAbstract import SchemaAbstract
 
 
 class UserSchema(SchemaAbstract):

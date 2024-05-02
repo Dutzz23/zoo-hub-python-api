@@ -13,16 +13,16 @@ Used `Redis` as cache system and `Pydantic` for object-modeling.
 ### Technologies
 
 <span>
-<img src="https://fastapi.tiangolo.com/img/logo-margin/logo-teal.png" height="100" width="auto" alt="FastAPI logo">
-&nbsp;<img src="https://upload.wikimedia.org/wikipedia/commons/9/93/MongoDB_Logo.svg" height="100" width="auto" 
+<img app="https://fastapi.tiangolo.com/img/logo-margin/logo-teal.png" height="100" width="auto" alt="FastAPI logo">
+&nbsp;<img app="https://upload.wikimedia.org/wikipedia/commons/9/93/MongoDB_Logo.svg" height="100" width="auto" 
 alt="MongoDB Logo">&nbsp;&nbsp;
-<img src="https://www.svgrepo.com/show/303460/redis-logo.svg" height="100" width="auto" alt="Redis Logo">
+<img app="https://www.svgrepo.com/show/303460/redis-logo.svg" height="100" width="auto" alt="Redis Logo">
 </span>
 <br/>
 <span>
-<img src="https://www.sequoiacap.com/wp-content/uploads/sites/6/2023/08/name-and-logo-path.svg" height="100"
+<img app="https://www.sequoiacap.com/wp-content/uploads/sites/6/2023/08/name-and-logo-path.svg" height="100"
 width="auto" alt="Pydantic Logo">&nbsp;&nbsp;
-<img src="http://localhost:8000/img/jwt-seeklogo.svg" height="100" width="auto" alt="JWT Logo">
+<img app="http://localhost:8000/img/jwt-seeklogo.svg" height="100" width="auto" alt="JWT Logo">
 </span>
 
 All API documentation can be viewed using [FastAPI auto-generated documentation](http://localhost:8000/docs),

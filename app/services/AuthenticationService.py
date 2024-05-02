@@ -1,29 +1,27 @@
 import os
+import hashlib
 from datetime import timedelta, datetime, timezone
 from typing import Annotated
 
-from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
-import hashlib
-from jose import jwt, JWTError
+from fastapi import Depends, HTTPException, status
 from pydantic import ValidationError
-from redis import Redis
+from jose import jwt, JWTError
 
-from src.models.Account.Usr import Usr
-from src.repositories.UsrRepository import UsrRepository
-from src.services.ServiceAbstract import ServiceAbstract
-from src.utils.password_validators import validate_password, verify_password
+from app.utils.password_validators import validate_password, verify_password
+from app.services.ServiceAbstract import ServiceAbstract
+from app.repositories.UsrRepository import UsrRepository
+
+from app.models.Account.Usr import Usr
 
 _oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
-
-redis_cache = Redis(host='redis', port=6379, db=0, single_connection_client=False)
 
 
 class AuthenticationService(ServiceAbstract):
     def __init__(self):
         super().__init__(UsrRepository)
         self.ACCESS_TOKEN_EXPIRE_MINUTES: int = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"))
-        self.__SECRET_KEY: str = os.getenv("SECRET_KEY")
+        self.__JWT_SECRET_KEY: str = os.getenv("JWT_SECRET_KEY")
         self.__ENCRYPTION_ALGORITHM: str = os.getenv("ENCRYPTION_ALG")
 
     def create_token(self, username: str) -> str:
@@ -31,7 +29,7 @@ class AuthenticationService(ServiceAbstract):
             to_encode = {"sub": username}
             access_token_expires = datetime.now(timezone.utc) + timedelta(minutes=self.ACCESS_TOKEN_EXPIRE_MINUTES)
             to_encode.update({"exp": access_token_expires})
-            encoded_jwt = jwt.encode(to_encode, self.__SECRET_KEY, algorithm=self.__ENCRYPTION_ALGORITHM)
+            encoded_jwt = jwt.encode(to_encode, self.__JWT_SECRET_KEY, algorithm=self.__ENCRYPTION_ALGORITHM)
         except Exception as e:
             raise Exception("Token creation error: ", e)
         return encoded_jwt
@@ -72,7 +70,7 @@ class AuthenticationService(ServiceAbstract):
             headers={"WWW-Authenticate": "Bearer"},
         )
         try:
-            payload = jwt.decode(token, self.__SECRET_KEY, algorithms=[self.__ENCRYPTION_ALGORITHM])
+            payload = jwt.decode(token, self.__JWT_SECRET_KEY, algorithms=[self.__ENCRYPTION_ALGORITHM])
             username: str = payload.get("sub")
             if username is None:
                 raise credentials_exception
@@ -109,7 +107,7 @@ class AuthenticationService(ServiceAbstract):
     def __hash_password(self, password: str) -> str:
         try:
             hash_object = hashlib.sha256()
-            hash_object.update(self.__SECRET_KEY.encode() + password.encode())
+            hash_object.update(self.__JWT_SECRET_KEY.encode() + password.encode())
             hash_password = hash_object.hexdigest()
             return hash_password
         except TypeError as e:

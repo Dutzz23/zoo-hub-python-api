@@ -1,4 +1,4 @@
-from src.repositories.RepositoryAbstract import RepositoryAbstract
+from app.repositories.RepositoryAbstract import RepositoryAbstract
 
 
 class ServiceAbstract:

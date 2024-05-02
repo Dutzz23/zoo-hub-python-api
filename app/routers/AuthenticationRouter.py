@@ -3,10 +3,10 @@ from typing import Annotated, Any
 from fastapi import APIRouter, HTTPException, Depends, status
 from fastapi.security import OAuth2PasswordRequestForm
 
-from src.models.Account.AccountCollection import AccountCollection
-from src.models.Account.Usr import Usr
-from src.models.Auth.Token import Token
-from src.services.AuthenticationService import AuthenticationService
+from app.models.Account.AccountCollection import AccountCollection
+from app.models.Account.Usr import Usr
+from app.models.Auth.Token import Token
+from app.services.AuthenticationService import AuthenticationService
 
 
 AuthenticationRouter = APIRouter(tags=['Authentication'])
