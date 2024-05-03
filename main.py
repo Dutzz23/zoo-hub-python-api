@@ -25,8 +25,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(UserRouter)
 app.include_router(AuthenticationRouter)
+app.include_router(UserRouter)
 
 
 # noinspection PyTypeHints

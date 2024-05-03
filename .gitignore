@@ -5,7 +5,7 @@ test_main.http
 # Local environment
 .venv
 # Redis database
-dump.rdb
+#dump.rdb
 
 # Idea
 .idea

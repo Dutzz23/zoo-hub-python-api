@@ -1,10 +1,12 @@
 import os
 import hashlib
+
 from datetime import timedelta, datetime, timezone
 from typing import Annotated
 
-from fastapi.security import OAuth2PasswordBearer
 from fastapi import Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordBearer
+from fastapi_framework import redis_dependency
 from pydantic import ValidationError
 from jose import jwt, JWTError
 
@@ -63,7 +65,7 @@ class AuthenticationService(ServiceAbstract):
             raise Exception("Error finding User information in the database after creation")
         return user
 
-    def verify_token(self, token: Annotated[str, Depends(_oauth2_scheme)]) -> bool:
+    async def verify_token(self, token: Annotated[str, Depends(_oauth2_scheme)]) -> bool:
         credentials_exception = HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Could not validate credentials",
@@ -76,15 +78,10 @@ class AuthenticationService(ServiceAbstract):
                 raise credentials_exception
         except JWTError:
             raise credentials_exception
-        # check cache
-        print("verifying token:")
-        # TODO read from "Create an index. In this example, all JSON documents with the key prefix user: will be indexed. For more information, see Query syntax."
-        #   link: https://redis.io/docs/latest/develop/connect/clients/python/
-        if redis_cache.get(username):
-            return redis_cache.get(username) == token
-        else:
-            redis_cache.set(username, token)
-            # redis_cache.set(username, token, exp=self.ACCESS_TOKEN_EXPIRE_MINUTES)
+        print("Verifying token...")
+        if not await self.__cache_token(username=username, token=token):
+            raise credentials_exception
+
         user = self.__get_user(username=username)
 
         if user is None:
@@ -112,3 +109,13 @@ class AuthenticationService(ServiceAbstract):
             return hash_password
         except TypeError as e:
             raise ValidationError(f"Password hashing error: {e}")
+
+    async def __cache_token(self, token: str, username) -> False:
+        print(username, token)
+        await redis_dependency.redis.set(username, token)
+        cached_token = (await redis_dependency.redis.get(username)).decode('utf-8')
+        if not cached_token:
+            return False
+        if token != cached_token:
+            return False
+        return True

@@ -2,6 +2,7 @@ from typing import Annotated, Any
 
 from fastapi import APIRouter, HTTPException, Depends, status
 from fastapi.security import OAuth2PasswordRequestForm
+from fastapi_framework import redis_dependency
 
 from app.models.Account.AccountCollection import AccountCollection
 from app.models.Account.Usr import Usr
@@ -53,9 +54,10 @@ async def register(register_data: Annotated[OAuth2PasswordRequestForm, Depends()
 )
 def get_all_accounts(user: Annotated[Usr, Depends(_service.verify_token)]) -> HTTPException | Any:
     try:
-        _service.repository.find_one_by({"email": "dsdasd@mail.com"})
+        rd = redis_dependency.redis.get('vlad')
+        print("from endpooint method: ", rd)
+
         data = _service.get_all()
-        print("GET ALL", data)
         return data
     except Exception as e:
         return HTTPException(status_code=400, detail=str(e))

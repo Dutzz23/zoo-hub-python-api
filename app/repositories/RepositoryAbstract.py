@@ -1,6 +1,7 @@
 from typing import Optional, List
 
 from bson import ObjectId
+from colorama import Fore
 from pydantic import BaseModel
 
 from app.utils.database.config import database
@@ -29,7 +30,7 @@ class RepositoryAbstract:
             result = self.collection.insert_one(data_dict)
             return str(result.inserted_id)
         except Exception as e:
-            print("RepositoryAbstract.create(): ", e)
+            print(f"{Fore.GREEN}MongoDB Error:\n\t RepositoryAbstract.create():\n\t\t {e}")
         return None
 
     def find_by_id(self, data_id: str) -> Optional[BaseModel]:
@@ -40,7 +41,7 @@ class RepositoryAbstract:
             data = self.collection.find_one({'_id': ObjectId(data_id)})
             return self.resource_class(**data) if data else None
         except Exception as e:
-            print("RepositoryAbstract.find_by_id(): ", e)
+            print(f"{Fore.GREEN}MongoDB Error:\n\t RepositoryAbstract.find_by_id():\n\t\t {e}")
         return None
 
     def find_one_by(self, query: dict) -> Optional[BaseModel]:
@@ -56,7 +57,7 @@ class RepositoryAbstract:
             data = self.collection.find_one(query)
             return self.resource_class(**data) if data else None
         except Exception as e:
-            print("RepositoryAbstract.find_one_by(): ", e)
+            print(f"{Fore.GREEN}MongoDB Error:\n\t RepositoryAbstract.find_one_by():\n\t\t {e}")
         return None
 
     def find_all(self) -> Optional[Collection]:
@@ -69,7 +70,7 @@ class RepositoryAbstract:
             return self.Collection(items=items)
             # return data_list
         except Exception as e:
-            print("RepositoryAbstract.read_all(): ", e)
+            print(f"{Fore.GREEN}MongoDB Error:\n\t RepositoryAbstract.read_all():\n\t\t {e}")
         return None
 
     def update(self, data: BaseModel) -> bool:
@@ -86,7 +87,7 @@ class RepositoryAbstract:
             result = self.collection.update_one({"_id": data.id}, {"$set": updated_fields})
             return result.modified_count > 0
         except Exception as e:
-            print("RepositoryAbstract.update(): ", e)
+            print(f"{Fore.GREEN}MongoDB Error:\n\t RepositoryAbstract.update():\n\t\t {e}")
         return False
 
     def delete(self, data_id: str) -> bool:
@@ -97,5 +98,5 @@ class RepositoryAbstract:
             result = self.collection.delete_one({"_id": ObjectId(data_id)})
             return result.deleted_count > 0
         except Exception as e:
-            print("RepositoryAbstract.delete(): ", e)
+            print(f"{Fore.GREEN}MongoDB Error:\n\t RepositoryAbstract.delete():\n\t\t {e}")
         return False
