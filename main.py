@@ -1,12 +1,23 @@
+import os
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from animals_monitor.router_animals_monitor import animals_monitor_router
-from employees_chat.router_employees_chat import employees_chat_router
+from fastapi_framework import redis_dependency
+from starlette.responses import FileResponse
+from colorama import Fore
+from api_description import description
+from app.routers.AuthenticationRouter import AuthenticationRouter
+from app.routers.TicketRouter import TicketRouter
+from app.routers.UserRouter import UserRouter
 
-app = FastAPI()
-app.include_router(animals_monitor_router)
-app.include_router(employees_chat_router)
+app = FastAPI(
+    title="ZooHub API",
+    description=description,
+    version="0.1.0",
+    root_path="/api"
+)
 
+# noinspection PyTypeChecker
 app.add_middleware(
     CORSMiddleware,
     # allow_origins=["http://localhost:3000"],
@@ -16,25 +27,39 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# lab2, lab3, prezentari, lab4 cod sursa, materiale utile, exemple probleme sockets, test1, test2
-
-from pymongo.mongo_client import MongoClient
-
-uri = "mongodb+srv://Dutzz:mTducQ22TviowDpx@cluster0.e0wvocd.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
-
-client = MongoClient(uri)
-
-try:
-    client.admin.command('ping')
-    print("Pinged!")
-
-except Exception as e:
-    print(e)
+app.include_router(AuthenticationRouter)
+app.include_router(UserRouter)
+app.include_router(TicketRouter)
 
 
-@app.get("/")
-async def root():
-    return {"message": "Hello World"}
+# noinspection PyTypeHints
+@app.on_event("startup")
+async def startup():
+    try:
+        await redis_dependency.init()
+        print(f"{Fore.RED}CACHE:    Redis connection established{Fore.RESET}")
+    except Exception as e:
+        print(f"Redis connection initialization error: {e}")
+
+
+@app.on_event("shutdown")
+async def shutdown():
+    try:
+        # No Redis client closing for fastapi-framework.redis/redis_dependency
+        # Just an improvisation here
+        redis_dependency.redis.get("").close()
+        print(f"{Fore.RED}CACHE:    Redis connection ended{Fore.RESET}")
+    except Exception as e:
+        print(f"Redis connection closing error: {e}")
+
+
+# Route for FastApiDocs to display local images. Not to be exposed
+@app.get(
+    path="/img/{filename}",
+    deprecated=True)
+def get_img(filename: str):
+    filepath = os.path.join('images/', os.path.basename(filename))
+    return FileResponse(filepath)
 
 
 @app.get("/hello/{name}")
