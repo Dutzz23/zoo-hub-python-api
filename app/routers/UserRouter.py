@@ -9,8 +9,9 @@ from app.models.User.UserCollection import UserCollection
 from app.utils.database.config import database
 from app.models.User.UserData import UserData
 from app.repositories.UserRepository import UserRepository
+from app.utils.generate_router_description import generate_router_description
 
-UserRouter = APIRouter(prefix='/users', tags=['users'])
+UserRouter = APIRouter(prefix='/users', tags=['Users'])
 
 collection = database['users']
 
@@ -52,7 +53,7 @@ async def get_users():
 @UserRouter.post(
     path='',
     response_model=UserData,
-    response_description="Create a new user",
+    description="Create a new user",
     status_code=HTTPStatus.CREATED,
     response_model_by_alias=False
 )
@@ -97,6 +98,15 @@ async def read_user(user_id: str):
     else:
         return JSONResponse(status_code=404, content=f"User with id={user_id} not found")
 
+
+@UserRouter.options(
+    path="",
+    description="Get User router description (JSON)",
+    summary="Router description",
+)
+async def get_options():
+    router_details = generate_router_description(UserRouter)
+    return router_details
 # @UserRouter.post("/users/")
 # async def create_user(user: User):
 #     # Convert Pydantic model to dictionary for MongoDB insertion

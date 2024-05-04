@@ -8,6 +8,9 @@ from app.utils.database.config import database
 
 
 class RepositoryAbstract:
+    """
+    Abstract base class for repositories implementations over MongoDB.
+    """
     def __init__(self, table_name: str, resource_class):
         self.collection = database[table_name]
         self.resource_class = resource_class
@@ -17,7 +20,8 @@ class RepositoryAbstract:
         """
            A container holding a list of `resource` instances.
 
-           This exists because providing a top-level array in a JSON response can be a [vulnerability](https://haacked.com/archive/2009/06/25/json-hijacking.aspx/)
+           This exists because providing a top-level array in a JSON response can be a
+            [vulnerability](https://haacked.com/archive/2009/06/25/json-hijacking.aspx/)
            """
         items: List[BaseModel]
 
@@ -30,7 +34,7 @@ class RepositoryAbstract:
             result = self.collection.insert_one(data_dict)
             return str(result.inserted_id)
         except Exception as e:
-            print(f"{Fore.GREEN}MongoDB Error:\n\t RepositoryAbstract.create():\n\t\t {e}")
+            print(f"{Fore.GREEN}MongoDB Error:\n\t RepositoryAbstract.create():\n\t\t {e}{Fore.RESET}")
         return None
 
     def find_by_id(self, data_id: str) -> Optional[BaseModel]:
@@ -41,7 +45,7 @@ class RepositoryAbstract:
             data = self.collection.find_one({'_id': ObjectId(data_id)})
             return self.resource_class(**data) if data else None
         except Exception as e:
-            print(f"{Fore.GREEN}MongoDB Error:\n\t RepositoryAbstract.find_by_id():\n\t\t {e}")
+            print(f"{Fore.GREEN}MongoDB Error:\n\t RepositoryAbstract.find_by_id():\n\t\t {e}{Fore.RESET}")
         return None
 
     def find_one_by(self, query: dict) -> Optional[BaseModel]:
@@ -57,7 +61,7 @@ class RepositoryAbstract:
             data = self.collection.find_one(query)
             return self.resource_class(**data) if data else None
         except Exception as e:
-            print(f"{Fore.GREEN}MongoDB Error:\n\t RepositoryAbstract.find_one_by():\n\t\t {e}")
+            print(f"{Fore.GREEN}MongoDB Error:\n\t RepositoryAbstract.find_one_by():\n\t\t {e}{Fore.RESET}")
         return None
 
     def find_all(self) -> Optional[Collection]:
@@ -70,7 +74,7 @@ class RepositoryAbstract:
             return self.Collection(items=items)
             # return data_list
         except Exception as e:
-            print(f"{Fore.GREEN}MongoDB Error:\n\t RepositoryAbstract.read_all():\n\t\t {e}")
+            print(f"{Fore.GREEN}MongoDB Error:\n\t RepositoryAbstract.read_all():\n\t\t {e}{Fore.RESET}")
         return None
 
     def update(self, data: BaseModel) -> bool:
@@ -87,7 +91,7 @@ class RepositoryAbstract:
             result = self.collection.update_one({"_id": data.id}, {"$set": updated_fields})
             return result.modified_count > 0
         except Exception as e:
-            print(f"{Fore.GREEN}MongoDB Error:\n\t RepositoryAbstract.update():\n\t\t {e}")
+            print(f"{Fore.GREEN}MongoDB Error:\n\t RepositoryAbstract.update():\n\t\t {e}{Fore.RESET}")
         return False
 
     def delete(self, data_id: str) -> bool:
@@ -98,5 +102,5 @@ class RepositoryAbstract:
             result = self.collection.delete_one({"_id": ObjectId(data_id)})
             return result.deleted_count > 0
         except Exception as e:
-            print(f"{Fore.GREEN}MongoDB Error:\n\t RepositoryAbstract.delete():\n\t\t {e}")
+            print(f"{Fore.GREEN}MongoDB Error:\n\t RepositoryAbstract.delete():\n\t\t {e}{Fore.RESET}")
         return False

@@ -2,14 +2,10 @@ from typing import Optional
 from pydantic import Field, EmailStr, ConfigDict, BaseModel
 from bson import ObjectId
 
-from app.models.User.UserData import UserData
 from app.utils.PyObjectId import PyObjectId
 
 
 class User(BaseModel):
-    """
-    User model
-    """
     id: PyObjectId = Field(validation_alias="_id", title="id", description="User id. Alias: `id`")
     name: Optional[str] = Field(description="User name")
     email: Optional[EmailStr] = Field(description="User email")

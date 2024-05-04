@@ -4,15 +4,17 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi_framework import redis_dependency
 from starlette.responses import FileResponse
-
+from colorama import Fore
 from api_description import description
 from app.routers.AuthenticationRouter import AuthenticationRouter
+from app.routers.TicketRouter import TicketRouter
 from app.routers.UserRouter import UserRouter
 
 app = FastAPI(
     title="ZooHub API",
     description=description,
     version="0.1.0",
+    root_path="/api"
 )
 
 # noinspection PyTypeChecker
@@ -27,6 +29,7 @@ app.add_middleware(
 
 app.include_router(AuthenticationRouter)
 app.include_router(UserRouter)
+app.include_router(TicketRouter)
 
 
 # noinspection PyTypeHints
@@ -34,7 +37,7 @@ app.include_router(UserRouter)
 async def startup():
     try:
         await redis_dependency.init()
-        print("Redis connection established")
+        print(f"{Fore.RED}CACHE:    Redis connection established{Fore.RESET}")
     except Exception as e:
         print(f"Redis connection initialization error: {e}")
 
@@ -43,7 +46,9 @@ async def startup():
 async def shutdown():
     try:
         # No Redis client closing for fastapi-framework.redis/redis_dependency
-        print("Redis connection ended")
+        # Just an improvisation here
+        redis_dependency.redis.get("").close()
+        print(f"{Fore.RED}CACHE:    Redis connection ended{Fore.RESET}")
     except Exception as e:
         print(f"Redis connection closing error: {e}")
 
@@ -55,14 +60,6 @@ async def shutdown():
 def get_img(filename: str):
     filepath = os.path.join('images/', os.path.basename(filename))
     return FileResponse(filepath)
-
-
-@app.get("/")
-async def root():
-    try:
-        return {"message": "Hello World"}
-    except Exception as e:
-        print(e)
 
 
 @app.get("/hello/{name}")

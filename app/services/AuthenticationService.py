@@ -16,7 +16,7 @@ from app.repositories.UsrRepository import UsrRepository
 
 from app.models.Account.Usr import Usr
 
-_oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+_oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/token",scheme_name="user_schema")
 
 
 class AuthenticationService(ServiceAbstract):
